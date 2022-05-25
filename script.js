@@ -12,6 +12,7 @@ let resultadoConversor
 let simuladorAhorro
 let formSimulador
 let botonBusqueda
+let verBusquedasAnteriores
 
 //Declaración de objetos y Arrays
 class Moneda {
@@ -40,8 +41,8 @@ class Busqueda {
     }      
 }
 
-const busquedas = []  //Guarda cada objeto de una nueva busqueda
-let Variasbusquedas = [] // Esto es un array de las busquedas
+const busquedas = []  //array de objetos Guarda en un objeto nuevo una nueva busqueda
+let busquedas2 = {}
 let historial = []   //Aqui se guarda el historial en localstorage
 
 //Funciones
@@ -49,12 +50,9 @@ const validador = (MonedaIn, Cantidad, meses) => {
     
     if((monedas.some(moneda => moneda.nombre === MonedaIn || moneda.sigla === MonedaIn)==false) || (isNaN(Cantidad)) || (isNaN(meses))){
         
-        if(monedas.some(moneda => moneda.nombre === MonedaIn || moneda.sigla === MonedaIn)==false) 
-            alert("Esa moneda no existe, vuelva a intentarlo")
-        if(isNaN(Cantidad))
-            alert("Ingrese números válidos")
-        if(isNaN(meses))
-            alert("Ingrese números válidos")
+        if(monedas.some(moneda => moneda.nombre === MonedaIn || moneda.sigla === MonedaIn)==false) alert("Esa moneda no existe, vuelva a intentarlo")
+        if(isNaN(Cantidad)) alert("Ingrese números válidos")
+        if(isNaN(meses)) alert("Ingrese números válidos")
         validar=false    
     }else{validar=true}    
 }
@@ -76,7 +74,7 @@ const Convertidor = (MonedaIn, Cantidad) => {
 const calcularAhorro = (USD, meses) => {
     
     busquedas.length=0
-    monedas.forEach((moneda) => {
+    monedas.forEach((moneda, indice) => {
         let TotalMoneda= 0
         
         for(i=1; i<=meses; i++) {
@@ -87,7 +85,7 @@ const calcularAhorro = (USD, meses) => {
         }
     
         busquedas.push(new Busqueda (moneda.nombre, moneda.sigla, meses, ahorro))
-    
+
         simuladorAhorro.innerHTML +=`
             <div class="card" style="width: 24rem;">
                 <div class="card-body">
@@ -97,31 +95,23 @@ const calcularAhorro = (USD, meses) => {
             </div>
         `     
     });
-
-    Variasbusquedas.push(busquedas)
     
-
+    console.log(busquedas)
+    busquedas2= {...busquedas}
+    historial.push(busquedas2)
+    console.log(historial)
 }
 
 const verHistorial = () => {
 
-    Variasbusquedas.forEach(busqueda => {
-        historial.push(busqueda)
-        localStorage.setItem("historial", JSON.stringify(historial))
-    });
     localStorage.setItem("historial", JSON.stringify(historial))
-
     let VerBusquedas = JSON.parse(localStorage.getItem("historial"))
-    console.log(VerBusquedas)
+
 }
 
 //Main  
 
-if(localStorage.getItem("historial")){
-    historial = JSON.parse(localStorage.getItem("historial"))
-}else{
-    localStorage.setItem("historial", JSON.stringify(historial))
-}
+historial = JSON.parse(localStorage.getItem("historial")) || []
 
 formConversor = document.querySelector("#formConversor")
 resultadoConversor = document.querySelector("#resultadoConversor")
@@ -157,8 +147,4 @@ formSimulador.addEventListener("submit", (evento) => {
 
 botonBusqueda= document.querySelector("#botonBusqueda")
 
-botonBusqueda.addEventListener("click", () => {
-    
-    verHistorial()
-
-})
+botonBusqueda.addEventListener("click", () => {verHistorial()})
