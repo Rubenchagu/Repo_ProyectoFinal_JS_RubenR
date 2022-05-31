@@ -33,26 +33,64 @@ const moneda5= new Moneda("gala games", "gala", 0.14, 0.01)
 const monedas = [moneda1, moneda2, moneda3, moneda4, moneda5]
 
 class Busqueda {
-    constructor(nombre, sigla, meses, ahorro) {
+    constructor(nombre, sigla, meses, ahorro, USDmensual) {
         this.nombre=nombre
         this.sigla=sigla
         this.meses=meses
         this.ahorro= ahorro
+        this.USDmensual= USDmensual
     }      
 }
 
-const busquedas = []  //array de objetos Guarda en un objeto nuevo una nueva busqueda
-let busquedas2 = {}
-let historial = []   //Aqui se guarda el historial en localstorage
+const busquedas = []  //array q guarda la última simulación de ahorro, cada objeto es una simulación del ahorro para cada moneda
+let historial = []   
 
 //Funciones
 const validador = (MonedaIn, Cantidad, meses) => {
     
-    if((monedas.some(moneda => moneda.nombre === MonedaIn || moneda.sigla === MonedaIn)==false) || (isNaN(Cantidad)) || (isNaN(meses))){
+    if((isNaN(Cantidad)) || (isNaN(meses)) || (meses>=60) || (Cantidad>10000000)){
         
-        if(monedas.some(moneda => moneda.nombre === MonedaIn || moneda.sigla === MonedaIn)==false) alert("Esa moneda no existe, vuelva a intentarlo")
-        if(isNaN(Cantidad)) alert("Ingrese números válidos")
-        if(isNaN(meses)) alert("Ingrese números válidos")
+        if(isNaN(Cantidad)) 
+            Toastify({
+                text: "Ingrese números validos",
+                duration: 3000,
+                gravity: "top",
+                position: "center", 
+                style: {
+                background: "linear-gradient(to right, #F12F06, #3B0F06)",
+                }
+            }).showToast();
+        if(isNaN(meses)) 
+            Toastify({
+                text: "Ingrese números validos",
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                style: {
+                background: "linear-gradient(to right, #F12F06, #3B0F06)",
+                }
+            }).showToast();
+          if(Cantidad>10000000)
+            Toastify({
+                text: "Cantidad excede el limite",
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                style: {
+                background: "linear-gradient(to right, #F12F06, #3B0F06)",
+                }
+            }).showToast();
+          if(meses>=60)
+            Toastify({
+                text: "Limite maximo: 60 meses",
+                duration: 3000,
+                gravity: "top",
+                position: "center",
+                style: {
+                background: "linear-gradient(to right, #F12F06, #3B0F06)",
+                }
+            }).showToast();
+
         validar=false    
     }else{validar=true}    
 }
@@ -62,10 +100,10 @@ const Convertidor = (MonedaIn, Cantidad) => {
     const MonedaConvertir = monedas.find(moneda => moneda.nombre === MonedaIn || moneda.sigla === MonedaIn)
     TotalUSD= Cantidad*MonedaConvertir.precioUSD
     resultadoConversor.innerHTML = `
-        <div class="card" style="width: 18rem;">
+        <div class="card text-white border-danger mb-3">
             <div class="card-body">
-                <p class="card-text">${Cantidad} ${MonedaIn}= ${TotalUSD} USD</p>
-                <p class="card-text">TRM utilizada: 1 ${MonedaIn}= ${MonedaConvertir.precioUSD} </p>
+                <p class="card-text">${Cantidad} ${MonedaIn.toUpperCase()}= ${TotalUSD.toFixed(2)} USD</p>
+                <p class="card-text">TRM: 1 ${MonedaIn.toUpperCase()}= ${MonedaConvertir.precioUSD} </p>
             </div>
         </div>
     `
@@ -73,45 +111,60 @@ const Convertidor = (MonedaIn, Cantidad) => {
 
 const calcularAhorro = (USD, meses) => {
     
+    simuladorAhorro.innerHTML =`` // Borro el HTML de la última busqueda para mostrar solo la nueva
     busquedas.length=0
     monedas.forEach((moneda, indice) => {
         let TotalMoneda= 0
+        let monedaUSD= moneda.precioUSD
         
         for(i=1; i<=meses; i++) {
 
-            TotalMoneda= TotalMoneda + USD / moneda.precioUSD
-            ahorro= parseFloat(moneda.precioUSD * TotalMoneda)
-            moneda.precioUSD = moneda.precioUSD + (moneda.precioUSD * moneda.porcentajeCrecimiento) 
+            TotalMoneda= TotalMoneda + USD / monedaUSD
+            ahorro= parseFloat(monedaUSD * TotalMoneda)
+            monedaUSD = monedaUSD + (monedaUSD * moneda.porcentajeCrecimiento) 
         }
     
-        busquedas.push(new Busqueda (moneda.nombre, moneda.sigla, meses, ahorro))
-
+        busquedas.push(new Busqueda (moneda.nombre, moneda.sigla, meses, ahorro, USD))
+        
         simuladorAhorro.innerHTML +=`
-            <div class="card" style="width: 24rem;">
+            <div class="card text-white bg-primary mb-3" >
+                <h6 style="text-align:center" class="card-header">${(moneda.nombre.toUpperCase())} (${moneda.sigla.toUpperCase()})</h6>    
                 <div class="card-body">
-                    <h5 class="card-title">${(moneda.nombre.toUpperCase())}(${moneda.sigla})</h5>
-                    <p class="card-text">Total ahorrado en ${meses} meses=${ahorro.toFixed(2)}  USD</p>
+                    <p class="card-text">Ahorro mensual: ${USD} USD</p>
+                    <p class="card-text">Total de meses: ${meses} meses</p>
+                    <p class="card-text">Total ahorrado: ${ahorro.toFixed(2)} USD</p>
                 </div>
             </div>
         `     
     });
     
     console.log(busquedas)
-    busquedas2= {...busquedas}
-    historial.push(busquedas2)
+    historial=[...busquedas]
     console.log(historial)
+    localStorage.setItem("historial", JSON.stringify(historial))
 }
 
 const verHistorial = () => {
 
-    localStorage.setItem("historial", JSON.stringify(historial))
-    let VerBusquedas = JSON.parse(localStorage.getItem("historial"))
-
+    let VerBusqueda = JSON.parse(localStorage.getItem("historial"))
+    console.log(VerBusqueda)
+    simuladorAhorro.innerHTML =`` // Borro el HTML de la última busqueda para mostrar solo la última busqueda guardada en localstorage
+    
+    VerBusqueda.forEach(moneda => {
+        simuladorAhorro.innerHTML +=`
+        <div class="card border-info mb-3" >
+            <h6 style="text-align:center" class="card-header">${(moneda.nombre.toUpperCase())} (${moneda.sigla.toUpperCase()})</h6>
+            <div class="card-body">
+                <p class="card-text">Ahorro mensual: ${moneda.USDmensual} USD</p>
+                <p class="card-text">Total de meses: ${moneda.meses} meses</p>
+                <p class="card-text">Total ahorrado: ${moneda.ahorro.toFixed(2)} USD</p>
+            </div>
+        </div>
+    `
+    });
 }
 
 //Main  
-
-historial = JSON.parse(localStorage.getItem("historial")) || []
 
 formConversor = document.querySelector("#formConversor")
 resultadoConversor = document.querySelector("#resultadoConversor")
@@ -146,5 +199,4 @@ formSimulador.addEventListener("submit", (evento) => {
 })
 
 botonBusqueda= document.querySelector("#botonBusqueda")
-
 botonBusqueda.addEventListener("click", () => {verHistorial()})

@@ -1,0 +1,42 @@
+
+main{
+    display: flex;
+    flex-direction: row;
+}
+
+.simulador{
+    padding: 2rem;
+    width: 70%;
+    font-size: 1.3vw;
+}
+
+.conversor{
+    padding-top: 2rem;
+    width: 30%;
+}
+
+.conversorFixed{
+    position: fixed;
+    margin-right: 3rem;
+    font-size: 1.3vw;
+}
+
+#simuladorAhorro{
+    margin-top: 2rem;
+}
+
+#simuladorAhorro div{
+    width: 60%;
+    margin: 0 auto;
+    font-size: 1.4vw; 
+}
+
+#resultadoConversor{
+    margin-top: 2rem;
+}
+
+#resultadoConversor div{
+   width: 80%;
+   margin: 0 auto;
+   font-size: 1.1vw;   
+}
