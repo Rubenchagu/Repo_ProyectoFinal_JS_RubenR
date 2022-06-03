@@ -13,6 +13,7 @@ let simuladorAhorro
 let formSimulador
 let botonBusqueda
 let verBusquedasAnteriores
+let notificacion
 
 //Declaración de objetos y Arrays
 class Moneda {
@@ -24,13 +25,24 @@ class Moneda {
     }      
 }
 
-const moneda1= new Moneda("bitcoin", "btc", 38000, 0.05)
-const moneda2= new Moneda("etherium", "eth", 2800, 0.04)
-const moneda3= new Moneda("oasis Protocol", "rose", 0.17, 0.03)
-const moneda4= new Moneda("cardano", "ada", 0.81, 0.02)
-const moneda5= new Moneda("gala games", "gala", 0.14, 0.01)
+const moneda1= new Moneda("bitcoin", "btc", 0, 0.05)
+const moneda2= new Moneda("etherium", "eth", 0, 0.04)
+//const moneda3= new Moneda("oasis Protocol", "rose", 0.17, 0.03)
+//const moneda4= new Moneda("cardano", "ada", 0.81, 0.02)
+//const moneda5= new Moneda("gala games", "gala", 0.14, 0.01)
 
-const monedas = [moneda1, moneda2, moneda3, moneda4, moneda5]
+const monedas = [moneda1, moneda2]
+
+//setInterval(() => {
+    monedas.forEach((moneda, indice) => {
+        fetch(`https://criptoya.com/api/bitstamp/${moneda.sigla}`)
+        .then(Response => Response.json())
+        .then(({last}) =>{
+            moneda.precioUSD = last
+        })
+    });
+    
+//}, 10000);
 
 class Busqueda {
     constructor(nombre, sigla, meses, ahorro, USDmensual) {
@@ -43,56 +55,47 @@ class Busqueda {
 }
 
 const busquedas = []  //array q guarda la última simulación de ahorro, cada objeto es una simulación del ahorro para cada moneda
-let historial = []   
+let historial = []   //array para guardar en localstorage la última simulación
 
 //Funciones
-const validador = (MonedaIn, Cantidad, meses) => {
+const validador = (Cantidad, meses) => {
     
     if((isNaN(Cantidad)) || (isNaN(meses)) || (meses>=60) || (Cantidad>10000000)){
         
-        if(isNaN(Cantidad)) 
-            Toastify({
-                text: "Ingrese números validos",
-                duration: 3000,
-                gravity: "top",
-                position: "center", 
-                style: {
-                background: "linear-gradient(to right, #F12F06, #3B0F06)",
-                }
-            }).showToast();
-        if(isNaN(meses)) 
-            Toastify({
-                text: "Ingrese números validos",
-                duration: 3000,
-                gravity: "top",
-                position: "center",
-                style: {
-                background: "linear-gradient(to right, #F12F06, #3B0F06)",
-                }
-            }).showToast();
-          if(Cantidad>10000000)
-            Toastify({
-                text: "Cantidad excede el limite",
-                duration: 3000,
-                gravity: "top",
-                position: "center",
-                style: {
-                background: "linear-gradient(to right, #F12F06, #3B0F06)",
-                }
-            }).showToast();
-          if(meses>=60)
-            Toastify({
-                text: "Limite maximo: 60 meses",
-                duration: 3000,
-                gravity: "top",
-                position: "center",
-                style: {
-                background: "linear-gradient(to right, #F12F06, #3B0F06)",
-                }
-            }).showToast();
-
+        if(isNaN(Cantidad)){
+            notificacion="Ingrese números validos" 
+            notificacionValidador(notificacion)
+        }
+        if(isNaN(meses)){
+            notificacion="Ingrese números validos" 
+            notificacionValidador(notificacion)
+        } 
+            
+        if(Cantidad>10000000){
+            notificacion="Cantidad excede el limite" 
+            notificacionValidador(notificacion)
+        }
+            
+        if(meses>=60){
+            notificacion="El número máximo de meses es 60" 
+            notificacionValidador(notificacion)
+        }
+        
         validar=false    
+    
     }else{validar=true}    
+}
+
+const notificacionValidador = (texto) =>{
+    Toastify({
+        text: texto,
+        duration: 3000,
+        gravity: "top",
+        position: "center", 
+        style: {
+        background: "linear-gradient(to right, #F12F06, #3B0F06)",
+        }
+    }).showToast();
 }
 
 const Convertidor = (MonedaIn, Cantidad) => {    
@@ -174,7 +177,7 @@ formConversor.addEventListener("submit", (evento) => {
     evento.preventDefault()
     MonedaIngresada= (document.querySelector("#MonedaIngresada").value).toLowerCase()
     CantidadIngresada= parseFloat(document.querySelector("#CantidadIngresada").value)
-    validador(MonedaIngresada, CantidadIngresada, 0)
+    validador(CantidadIngresada, 0)
 
     if(validar==true){
         Convertidor(MonedaIngresada, CantidadIngresada)
@@ -190,7 +193,7 @@ formSimulador.addEventListener("submit", (evento) => {
     evento.preventDefault()
     CantidadIngresadaUSD= parseFloat(document.querySelector("#CantidadIngresadaUSD").value)
     MesesIngresados= parseFloat(document.querySelector("#MesesIngresados").value)
-    validador("btc", CantidadIngresadaUSD, MesesIngresados)
+    validador(CantidadIngresadaUSD, MesesIngresados)
 
     if(validar==true){
         calcularAhorro(CantidadIngresadaUSD, MesesIngresados)
