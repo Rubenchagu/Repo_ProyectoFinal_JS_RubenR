@@ -7,50 +7,88 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://bootswatch.com/5/slate/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Crypto Savings</title>
 </head>
 <body>
     <header class="card-header"> <h1 style="text-align: center;">CRYPTO SAVINGS</h1> </header>
+    <section id="marketPrice"></section>
+    <article>
+        <div class="card mb-3">
+            <div class="card-body" style="padding: 2rem;">
+              <h5 class="card-title">¿Por qué ahorrar en Crypto?</h5>
+              <h6 class="card-subtitle text-muted">Sencillo: Es la mejor forma de protegernos contra la inflación</h6>
+            </div>
+            <div id="imgHitorico">
+                <img src="/Dolar_vs_BTC.png" alt="Historico BTC vs Dolar">
+            </div>
+            <div class="card-body">
+              <p class="card-text" style="padding: 0 2rem;">
+                Los gráficos históricos de las principales monedas en el mundo crypto nos muestran que siempre hay una temporada 
+                alcista después de que ocurra el halving de Bitcoin. El siguiente halving será en 2024, teniendo en cuenta esto y los 
+                precios del mercado actual, el siguiente simulador calcula un porcentaje de crecimiento mensual sobre el precio actual vs dólar 
+                de las 5 principales cryptomonedas hasta alcanzar como mínimo su ATH en 2024-2025 (aproximadamente en 30 meses).
+              </p>
+            </div>
+        </div>
+    </article>
     <main>
         <div class="simulador">
-            <div style="width: 80%; margin: 0 auto;">
-                <h4 style="text-align: center;" class="card-title card text-white bg-success mb-3">SIMULADOR AHORRO (BTC/ETH)</h4>
+            <div>
+                <h4 style="text-align: center;" class="card-title card text-white bg-success mb-3">SIMULADOR AHORRO CRYPTO</h4>
                 <form class="card text-white bg-secondary mb-3" id="formSimulador">
                     <div class="card-body">
-                        <label for="CantidadIngresadaUSD" class="form-label">ingrese la cantidad en Dólares que quiere ahorrar mensualmente</label>
-                        <input type="text" class="form-control" id="CantidadIngresadaUSD" style="margin: 0 1rem; width: 80%;">
-                        <label for="MesesIngresados" class="form-label">ingrese el número de meses que quiere hacer el ahorro</label>
-                        <input type="text" class="form-control" id="MesesIngresados" style="margin: 0 1rem; width: 80%;">
+                        <label for="MonedaIngresadaSim" class="form-label mt-4">Seleccione la moneda</label>
+                        <select class="form-select" id="MonedaIngresadaSim" style="width: 80%;">
+                            <option>BTC</option>
+                            <option>ETH</option>
+                            <option>BNB</option>    
+                            <option>ADA</option>
+                            <option>XRP</option>
+                        </select>
+                        <label for="CantidadIngresadaUSD" class="form-label">Cantidad (USD) que quiere ahorrar mensualmente</label>
+                        <input type="text" class="form-control" id="CantidadIngresadaUSD" style="width: 80%;">
+                        <label for="MesesIngresados" class="form-label">Número de meses que quiere hacer el ahorro</label>
+                        <input type="text" class="form-control" id="MesesIngresados" style="width: 80%;">
                     </div>
                     <button type="submit" class="btn btn-primary">Simular</button>
                 </form>
-                <button id="botonBusqueda" style="margin-top: 1rem;" type="button" class="btn btn-primary">Ver última busqueda</button> 
+                <button id="botonBusqueda" style="margin-top: 1rem;" type="button" class="btn btn-primary">Ver ultimas simulaciones</button> 
                 <div id="simuladorAhorro" class="resultadoSimulador"></div>
             </div>
         </div>
-        <!-- -->
+
         <div class="conversor">
             <div class="conversorFixed">   
                 <h4 style="text-align: center;" class="card text-white bg-danger mb-3 card-title">CONVERSOR</h4>
                 <form class="card text-white bg-secondary mb-3" id="formConversor">
-                    <div class="card-body form-group">
+                    <div class="card-body">
                         <label for="MonedaIngresada" class="form-label mt-4">seleccione la moneda</label>
-                        <select class="form-select" id="MonedaIngresada">
+                        <select class="form-select" id="MonedaIngresada" style="width: 80%;">
                             <option>BTC</option>
                             <option>ETH</option>
-                            <!--<option>ROSE</option>
+                            <option>BNB</option>
                             <option>ADA</option>
-                            <option>GALA</option>-->
+                            <option>XRP</option>
                         </select>
                         <label for="CantidadIngresada" class="form-label">ingrese la cantidad a convertir</label>
-                        <input type="text" class="form-control" id="CantidadIngresada" style="margin: 0 1rem; width: 80%;">
+                        <input type="text" class="form-control" id="CantidadIngresada" style="width: 80%;">
                     </div>
                     <button type="submit" class="btn btn-primary">Convertir</button>
                 </form>    
                 <div id="resultadoConversor"></div>
             </div>
-        </div>
+        </div> 
     </main>
+
+    <div id="graficasMonedas">
+        <div ><canvas id="graficaHistorico1"></canvas></div>
+        <div ><canvas id="graficaHistorico2"></canvas></div>
+        <div ><canvas id="graficaHistorico3"></canvas></div>
+        <div ><canvas id="graficaHistorico4"></canvas></div>
+        <div ><canvas id="graficaHistorico5"></canvas></div>
+    </div>
+    
     
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.17/dist/sweetalert2.all.min.js"></script>

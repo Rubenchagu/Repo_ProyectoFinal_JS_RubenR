@@ -1,42 +1,140 @@
 
-main{
-    display: flex;
-    flex-direction: row;
-}
-
-.simulador{
-    padding: 2rem;
-    width: 70%;
-    font-size: 1.3vw;
-}
-
-.conversor{
-    padding-top: 2rem;
-    width: 30%;
-}
-
-.conversorFixed{
-    position: fixed;
-    margin-right: 3rem;
-    font-size: 1.3vw;
-}
-
-#simuladorAhorro{
+section{
     margin-top: 2rem;
+    display: flex;
+    justify-content: space-evenly;
 }
 
-#simuladorAhorro div{
-    width: 60%;
-    margin: 0 auto;
-    font-size: 1.4vw; 
+p{
+    text-align: justify;
+}
+#imgHitorico {
+    display: flex;
+    justify-content: center;}
+
+#imgHitorico img {
+    width: 50%;
+    height: 300px;
+}
+
+#formConversor div{
+    padding-top: 0px;
 }
 
 #resultadoConversor{
     margin-top: 2rem;
 }
 
-#resultadoConversor div{
-   width: 80%;
-   margin: 0 auto;
-   font-size: 1.1vw;   
+#formSimulador div{
+    padding-top: 0px;
+}
+
+#simuladorAhorro{
+    margin-top: 2rem;
+}
+
+#graficasMonedas{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#graficasMonedas div{
+    width: 50vw;
+}
+
+@media only screen and (max-width: 768px){
+
+    .DivLogos{
+        display: flex;
+        align-items: center;
+        width: 15%;
+        font-size: 1.8vw;
+    }
+    
+    section img{
+        width: 3vw;
+        height: 30px;
+        margin: 0.5rem;
+    }
+    
+    main{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .simulador{
+        padding: 2rem;
+        width: 70%;
+        font-size: 2.2vw;
+    }
+    
+    #simuladorAhorro div{
+        width: 80%;
+        margin: 0 auto;
+        font-size: 2vw; 
+    }
+    
+    .conversor{
+        padding: 2rem;
+        padding-bottom: 0;
+        width: 70%;
+        font-size: 2.2vw;
+    }
+    
+    #resultadoConversor div{
+       width: 80%;
+       margin: 0 auto;
+       font-size: 2vw;   
+    }
+}
+
+@media only screen and (min-width: 769px){
+    
+    .DivLogos{
+        display: flex;
+        align-items: center;
+        width: 15%;
+    }
+    
+    section img{
+        width: 5vw;
+        height: 50px;
+        margin: 1rem;
+    }
+
+    main{
+        display: flex;
+    }
+
+    .simulador{
+        padding: 2rem;
+        width: 70%;
+        font-size: 1.6vw;
+    }
+
+    .simulador div{
+        width: 80%;
+        margin: 0 auto;
+    }
+    
+    #simuladorAhorro div{
+        width: 80%;
+        margin: 0 auto;
+        font-size: 1.4vw; 
+    }
+    
+    .conversor{
+        padding: 2rem;
+        padding-left: 0;
+        width: 30%;
+        font-size: 1.6vw;
+    }
+    
+    #resultadoConversor div{
+       width: 80%;
+       margin: 0 auto;
+       font-size: 1.1vw;   
+    }
 }
